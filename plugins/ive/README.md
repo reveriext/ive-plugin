@@ -1,4 +1,4 @@
-# Ive 0.22.0
+# Ive 0.22.1
 
 The Ive plugin for Claude Code. Work on the person kit in your own project with Claude Code: Ive’s skill, Ive’s own editor, the connector and three commands (/ive:pull, /ive:open, /ive:save). It holds nothing of your organisation; the kit is pulled in when you work.
 
