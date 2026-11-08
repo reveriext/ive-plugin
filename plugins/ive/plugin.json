@@ -1,0 +1,31 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ive",
+  "version": "0.21.3",
+  "description": "Work on the person kit in your own project with Claude Code: Ive’s skill, Ive’s own editor, the connector and three commands (/ive:pull, /ive:open, /ive:save). It holds nothing of your organisation; the kit is pulled in when you work.",
+  "author": {
+    "name": "Ive",
+    "url": "https://hyive.app"
+  },
+  "homepage": "https://hyive.app",
+  "repository": "https://github.com/reveriext/ive-plugin",
+  "keywords": [
+    "ive",
+    "brand",
+    "design system",
+    "person kit"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Ive",
+        "shortDescription": "Your organisation’s brand, knowledge and collateral, as you may use them.",
+        "developerName": "Ive",
+        "category": "Productivity",
+        "websiteURL": "https://hyive.app",
+        "privacyPolicyURL": "https://hyive.app/privacy",
+        "termsOfServiceURL": "https://hyive.app/terms"
+      }
+    }
+  }
+}

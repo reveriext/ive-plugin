@@ -1,0 +1,15 @@
+{
+  "name": "ive",
+  "owner": {
+    "name": "Ive"
+  },
+  "description": "Ive, the same for every organisation.",
+  "plugins": [
+    {
+      "name": "ive",
+      "version": "0.21.3",
+      "description": "Work on the person kit in your own project with Claude Code: Ive’s skill, Ive’s own editor, the connector and three commands (/ive:pull, /ive:open, /ive:save). It holds nothing of your organisation; the kit is pulled in when you work.",
+      "source": "./plugins/ive"
+    }
+  ]
+}

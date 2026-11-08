@@ -1,0 +1,20 @@
+{
+  "name": "ive",
+  "interface": {
+    "displayName": "Ive"
+  },
+  "plugins": [
+    {
+      "name": "ive",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ive"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

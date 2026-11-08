@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ive": {
+      "type": "http",
+      "url": "https://hyive.app/mcp"
+    }
+  }
+}

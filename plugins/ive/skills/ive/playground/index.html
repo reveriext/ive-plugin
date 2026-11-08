@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Person kit playground</title>
+<style>
+  :root { --bg: #eef1f5; --panel: #fff; --line: #d8dee8; --text: #17202e; --soft: #5f6d80; --off: #c62828; --on: #1f7a4d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, sans-serif; }
+  header { padding: 20px 24px 4px; } header h1 { margin: 0; font-size: 18px; font-weight: 600; } header p { margin: 4px 0 0; color: var(--soft); }
+  main { display: grid; grid-template-columns: 290px 1fr; gap: 20px; padding: 16px 24px 40px; align-items: start; }
+  aside, section.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  aside { position: sticky; top: 12px; display: grid; gap: 12px; }
+  h2 { margin: 0 0 8px; font: 600 11px/1 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+  label { display: block; font-size: 12px; color: var(--soft); }
+  input, select, textarea { width: 100%; margin-top: 3px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px; font: inherit; font-size: 13px; color: var(--text); background: #fff; }
+  textarea { height: 240px; font: 12px/1.45 ui-monospace, monospace; resize: vertical; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .check { display: flex; gap: 6px; align-items: center; color: var(--text); } .check input { width: auto; margin: 0; }
+  button { font: inherit; font-size: 13px; padding: 6px 11px; border-radius: 6px; border: 1px solid var(--text); background: var(--text); color: #fff; cursor: pointer; }
+  .stack { display: grid; gap: 16px; }
+  .faces { display: flex; flex-wrap: wrap; gap: 18px; }
+  figure { margin: 0; } figcaption { margin-top: 6px; font-size: 12px; color: var(--soft); }
+  .holder { position: relative; overflow: hidden; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 6px 20px rgba(0,0,0,.08); }
+  .holder iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; } th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  th { font: 600 10px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+  td.num { font-family: ui-monospace, monospace; } .bad { color: var(--off); font-weight: 600; } .good { color: var(--on); }
+  .note { padding: 8px 10px; border-radius: 6px; background: #f3f5f9; color: var(--soft); font-size: 13px; }
+  .editors { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .shortened { margin: 12px 0 0; padding-left: 18px; font-size: 13px; color: var(--soft); } .shortened li.refused { color: var(--off); }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; padding: 12px 16px; } aside { position: static; } .editors { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Person kit playground</h1>
+  <p>Each piece laid out as Ive lays it out, on its grid, with where its ink lands measured.</p>
+</header>
+<main>
+  <aside>
+    <div>
+      <h2>Piece</h2>
+      <select id="piece"></select>
+    </div>
+    <div>
+      <h2>Grid</h2>
+      <div class="row3">
+        <label>Blocks<input id="grid" type="number" min="1" step="1"></label>
+        <label>Margin<input id="margin" type="number" min="0" step="0.5"></label>
+        <label>Size<select id="scale"><option value="1.5">1.5×</option><option value="3">3×</option><option value="5">5×</option></select></label>
+      </div>
+      <label class="check" style="margin-top:8px"><input id="overlay" type="checkbox" checked> Show the grid</label>
+    </div>
+    <div id="controls-box" hidden>
+      <h2>Controls</h2>
+      <div id="controls" style="display:grid;gap:8px"></div>
+    </div>
+    <div>
+      <h2>Whose</h2>
+      <select id="who"></select>
+      <div id="form" style="display:grid;gap:6px;margin-top:8px"></div>
+    </div>
+    <button id="copy" type="button">Copy the template as JSON</button>
+  </aside>
+  <div class="stack">
+    <section class="panel"><div class="faces" id="faces"></div><ul class="shortened" id="shortened" aria-label="Shortened for this template" hidden></ul><p class="note" id="said" hidden></p></section>
+    <section class="panel"><h2>Where the ink lands, in blocks</h2><table id="measured"></table></section>
+    <section class="panel"><h2>The template</h2><div class="editors" id="editors"></div></section>
+  </div>
+</main>
+<script type="module">
+import { layCard, layBanner, placesOf, fill, fieldSamples, fieldValues } from './fill.js';
+import { shortenFor, saidOfShortening } from './shorten.js';
+import { measure, pastMargin } from './measure.js';
+
+const load = async (name, fallback) => {
+  try { const r = await fetch(name); return r.ok ? await r.json() : fallback; } catch { return fallback; }
+};
+const kit = await load('kit.json', null);
+const brand = await load('brand.json', { organisation: '', website: '' });
+const people = [].concat(await load('people.json', []));
+if (!kit) {
+  document.querySelector('main').innerHTML = '<p class="note">No kit.json here. Put kit.json (get_person_kit), brand.json and people.json beside this page and serve the folder.</p>';
+  throw new Error('no kit.json');
+}
+
+// A code that stands in for the organisation's, the size it will be, when none was given.
+const QR_STAND_IN = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/>${
+    Array.from({ length: 29 * 29 }, (_, i) => [i % 29, Math.floor(i / 29)])
+      .filter(([x, y]) => ((x * 7 + y * 13 + x * y) % 5 < 2) || ((x < 7 || x > 21) && y < 7) || (x < 7 && y > 21))
+      .map(([x, y]) => `<rect x="${x}" y="${y}" width="1" height="1"/>`).join('')}</svg>`);
+
+const FIELDS = [['name', 'Name'], ['title', 'Title'], ['email', 'Email'], ['phone', 'Phone'], ['phoneLabel', 'Its label'],
+  ['phone2', 'Second phone'], ['phone2Label', 'Its label'], ['linkedin', 'LinkedIn'], ['location', 'Location']];
+const state = { piece: '', who: 0, person: { ...(people[0] ?? { name: 'A. Person', title: 'Title' }) }, grid: 40, margin: 4, scale: 1.5, overlay: true };
+
+const px = (length) => {
+  const n = parseFloat(length);
+  if (/mm$/.test(length)) return (n * 96) / 25.4;
+  if (/cm$/.test(length)) return (n * 96) / 2.54;
+  if (/in$/.test(length)) return n * 96;
+  if (/pt$/.test(length)) return (n * 96) / 72;
+  return n;
+};
+
+function pieces() {
+  const list = [];
+  const card = kit.card ?? kit;
+  if (card?.faces?.length) {
+    const variants = card.variants?.length ? card.variants : [{ name: '' }];
+    for (const v of variants) list.push({ id: `card:${v.name}`, label: `Card${v.name ? `, ${v.name}` : ''}`, part: 'card' });
+  }
+  (kit.banners ?? []).forEach((b, i) => list.push({ id: `banner:${i}`, label: `Banner, ${b.name}`, part: 'banners', at: i }));
+  (kit.signatures ?? []).forEach((s, i) => list.push({ id: `signature:${i}`, label: `Signature, ${s.name}`, part: 'signatures', at: i }));
+  return list;
+}
+
+function layout() {
+  const p = pieces().find((x) => x.id === state.piece) ?? pieces()[0];
+  if (!p) return null;
+  // A template's fields are filled with their samples, as Ive's Preview fills them.
+  if (p.part === 'card') { const card = kit.card ?? kit; return { p, lay: layCard(card, state.person, brand, brand.qr || QR_STAND_IN, p.id.slice(5), fieldSamples(card.fields)) }; }
+  if (p.part === 'banners') { const b = kit.banners[p.at]; return { p, lay: layBanner(b, state.person, brand, brand.qr || QR_STAND_IN, '', '', fieldSamples(b.fields)) }; }
+  // A signature: Ive also writes each rule onto its element for mail programs; here it is a stylesheet.
+  const s = kit.signatures[p.at];
+  // Shortened by the signature's inputs first, as every piece is.
+  const { person: taken, shortened, refused } = shortenFor(state.person, s.inputs);
+  const { values, made } = placesOf(taken, brand, '');
+  for (const k of ['logo', 'logo_reversed', 'mark', 'mark_on_light', 'qr']) values[k] = '';
+  const tel = (n) => (n ? `tel:${n.replace(/[^\d+]/g, '')}` : '');
+  Object.assign(values, { email_href: taken.email ? `mailto:${taken.email}` : '', phone_href: tel(taken.phone), phone_2_href: tel(taken.phone2), linkedin_href: taken.linkedin ? `https://${taken.linkedin.replace(/^https?:\/\//, '')}` : '', website_href: brand.website ? `https://${brand.website.replace(/^https?:\/\//, '')}` : '' });
+  Object.assign(values, fieldValues(s.fields, fieldSamples(s.fields)).values);
+  return { p, lay: { pages: [fill(s.markup, values, made)], names: [s.name], css: s.css, width: '', height: '', shortened, refused }, mail: true };
+}
+
+function overlaySvg(found, grid, margin) {
+  const ln = (x1, y1, x2, y2, c, w = 1, dash = '') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" vector-effect="non-scaling-stroke"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`;
+  let g = '';
+  for (let i = 0; i <= grid; i++) g += ln(i, 0, i, grid, 'rgba(232,62,110,.3)') + ln(0, i, grid, i, 'rgba(232,62,110,.3)');
+  g += `<rect x="${margin}" y="${margin}" width="${grid - 2 * margin}" height="${grid - 2 * margin}" fill="none" stroke="rgba(232,62,110,1)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`;
+  for (const f of found) {
+    const c = f.onGrid ? 'rgba(31,63,158,.85)' : 'rgba(198,40,40,.95)';
+    if (f.kind === 'text') g += ln(f.inkLeft, f.capTop, f.right, f.capTop, c, 1, '2 2') + ln(f.inkLeft, f.baseline, f.right, f.baseline, c, 1, '2 2');
+  }
+  return `<svg viewBox="0 0 ${grid} ${grid}" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;z-index:9;pointer-events:none">${g}</svg>`;
+}
+
+const ZOOM = 8;
+/** A face laid out at ZOOM times its size, out of sight, measured, and taken away. */
+function measureLarge(doc, w) {
+  return new Promise((resolve) => {
+    const big = document.createElement('iframe');
+    big.style.cssText = `position:fixed;left:-100000px;top:0;border:0;width:${w * ZOOM}px;height:${w * ZOOM * 4}px`;
+    big.srcdoc = doc.replace('<style>', `<style>html{zoom:${ZOOM}}`);
+    big.onload = async () => {
+      await big.contentDocument.fonts.ready;
+      const root = big.contentDocument.body.firstElementChild;
+      const found = measure(root, state.grid, ZOOM);
+      big.remove();
+      resolve({ found });
+    };
+    document.body.append(big);
+  });
+}
+
+const results = [];
+function draw() {
+  const got = layout();
+  const faces = document.getElementById('faces');
+  faces.innerHTML = '';
+  results.length = 0;
+  if (!got) return;
+  const { lay, mail } = got;
+  window.toolkit.piece = got.p;
+  // What the template shortened, and what it would refuse, under the piece.
+  const lines = saidOfShortening(lay);
+  const list = document.getElementById('shortened');
+  list.hidden = !lines.length;
+  list.innerHTML = '';
+  lines.forEach((line, i) => {
+    const li = document.createElement('li');
+    li.textContent = line;
+    if (i >= (lay.shortened ?? []).length) li.className = 'refused';
+    list.append(li);
+  });
+  window.toolkit.shortened = { shortened: lay.shortened ?? [], refused: lay.refused ?? [] };
+  const said = document.getElementById('said');
+  said.hidden = !mail;
+  said.textContent = mail ? 'A signature is shown with its stylesheet. Ive writes every rule onto its element for mail programs, and its pictures must be on the organisation’s own website: none of Ive’s files go into a signature.' : '';
+  lay.pages.forEach((page, i) => {
+    const w = lay.width ? px(lay.width) : 640;
+    const h = lay.height ? px(lay.height) : 0;
+    const holder = document.createElement('div');
+    holder.className = 'holder';
+    const frame = document.createElement('iframe');
+    frame.style.width = `${w}px`;
+    frame.style.transform = `scale(${state.scale})`;
+    const doc = `<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css"><style>html,body{margin:0}body{position:relative;width:${w}px${h ? `;height:${h}px` : ''}}${lay.css}</style></head><body>${page}</body></html>`;
+    frame.srcdoc = doc;
+    frame.onload = async () => {
+      const shown = frame.contentDocument;
+      await shown.fonts.ready;
+      const height = h || shown.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
+      holder.style.width = `${w * state.scale}px`;
+      holder.style.height = `${height * state.scale}px`;
+      if (mail || !shown.body.firstElementChild) return;
+      // Measured on a copy laid out large, where a pixel is a small part of a block.
+      const { found } = await measureLarge(doc, w);
+      results[i] = { face: lay.names[i], found, pastMargin: pastMargin(found, state.grid, state.margin) };
+      if (state.overlay) shown.body.insertAdjacentHTML('beforeend', overlaySvg(found, state.grid, state.margin));
+      table();
+    };
+    holder.append(frame);
+    const fig = document.createElement('figure');
+    fig.append(holder);
+    fig.insertAdjacentHTML('beforeend', `<figcaption>${lay.names[i]}</figcaption>`);
+    faces.append(fig);
+  });
+  editors(got.p);
+  table();
+}
+
+function table() {
+  const t = document.getElementById('measured');
+  const rows = results.flatMap((r) => r ? r.found.map((f) => ({ ...f, face: r.face, past: r.pastMargin.includes(f) })) : []);
+  if (!rows.length) { t.innerHTML = '<tr><td>Nothing measured for this piece.</td></tr>'; return; }
+  t.innerHTML = '<tr><th>Face</th><th>Element</th><th>What</th><th>Cap top / top</th><th>Baseline / bottom</th><th>Left</th><th>On the grid</th></tr>' +
+    rows.map((f) => `<tr><td>${f.face}</td><td>${f.what}</td><td>${f.kind === 'text' ? `${f.text} <span style="color:var(--soft)">${f.font}</span>` : 'box'}</td>
+      <td class="num">${f.kind === 'text' ? f.capTop : f.top}</td><td class="num">${f.kind === 'text' ? f.baseline : f.bottom}</td><td class="num">${f.kind === 'text' ? f.inkLeft : f.left}</td>
+      <td class="${f.onGrid && !f.past ? 'good' : 'bad'}">${f.past ? 'past the margin' : f.onGrid ? 'yes' : 'no'}</td></tr>`).join('');
+}
+
+function editors(p) {
+  const box = document.getElementById('editors');
+  const target = p.part === 'card' ? kit.card ?? kit : kit[p.part][p.at];
+  const fields = p.part === 'card'
+    ? [...target.faces.map((f, i) => [`${f.name || `Side ${i + 1}`} markup`, () => f.markup, (v) => { f.markup = v; }]), ['Stylesheet', () => target.css, (v) => { target.css = v; }]]
+    : [['Markup', () => target.markup, (v) => { target.markup = v; }], ['Stylesheet', () => target.css, (v) => { target.css = v; }]];
+  box.innerHTML = '';
+  for (const [name, get, set] of fields) {
+    const l = document.createElement('label');
+    l.textContent = name;
+    const ta = document.createElement('textarea');
+    ta.spellcheck = false;
+    ta.value = get();
+    let wait;
+    ta.oninput = () => { set(ta.value); clearTimeout(wait); wait = setTimeout(draw, 250); };
+    l.append(ta);
+    box.append(l);
+  }
+}
+
+function form() {
+  const who = document.getElementById('who');
+  who.innerHTML = people.map((p, i) => `<option value="${i}">${p.name || `Person ${i + 1}`}</option>`).join('') + '<option value="-1">Somebody else (the details below)</option>';
+  who.value = String(state.who);
+  who.onchange = () => { state.who = +who.value; if (state.who >= 0) state.person = { ...people[state.who] }; form(); draw(); };
+  document.getElementById('form').innerHTML = FIELDS.map(([k, l]) => `<label>${l}<input data-k="${k}" value="${(state.person[k] ?? '').replace(/"/g, '&quot;')}"></label>`).join('');
+  for (const input of document.querySelectorAll('#form input')) input.oninput = () => { state.person[input.dataset.k] = input.value; draw(); };
+}
+
+const piece = document.getElementById('piece');
+piece.innerHTML = pieces().map((p) => `<option value="${p.id}">${p.label}</option>`).join('');
+state.piece = piece.value;
+piece.onchange = () => { state.piece = piece.value; syncGrid(); controls(); draw(); };
+// The template the piece on show is made from: its grid and controls are what the boxes change.
+const templateOf = (p) =>
+  !p ? null : p.part === 'card' ? kit.card ?? kit : p.part === 'banners' ? kit.banners[p.at] : null;
+const current = () => pieces().find((x) => x.id === state.piece) ?? pieces()[0];
+// The grid shown is the template's own; Blocks and Margin change it, so the piece is laid out on it.
+function syncGrid() {
+  const t = templateOf(current());
+  if (t?.grid?.blocks) {
+    state.grid = t.grid.blocks;
+    state.margin = t.grid.margin;
+  }
+  document.getElementById('grid').value = state.grid;
+  document.getElementById('margin').value = state.margin;
+}
+// A slider for each control the template's designer gave it, within its range.
+function controls() {
+  const t = templateOf(current());
+  const list = t?.controls ?? [];
+  document.getElementById('controls-box').hidden = !list.length;
+  const box = document.getElementById('controls');
+  box.innerHTML = '';
+  for (const c of list) {
+    const l = document.createElement('label');
+    const shown = document.createElement('span');
+    shown.textContent = ` ${c.value}`;
+    l.textContent = c.label || c.name;
+    l.append(shown);
+    const range = document.createElement('input');
+    Object.assign(range, { type: 'range', min: c.min, max: c.max, step: c.step, value: c.value });
+    range.setAttribute('aria-label', c.label || c.name);
+    range.oninput = () => {
+      c.value = Number(range.value);
+      shown.textContent = ` ${c.value}`;
+      draw();
+    };
+    l.append(range);
+    box.append(l);
+  }
+}
+for (const [id, key, cast] of [['grid', 'grid', Number], ['margin', 'margin', Number], ['scale', 'scale', Number]]) {
+  const el = document.getElementById(id);
+  el.value = state[key];
+  el.onchange = () => {
+    state[key] = cast(el.value);
+    const t = templateOf(current());
+    if (t && key !== 'scale' && (t.grid?.blocks || key === 'grid')) {
+      t.grid = { blocks: state.grid, margin: state.margin };
+    }
+    draw();
+  };
+}
+document.getElementById('overlay').onchange = (e) => { state.overlay = e.target.checked; draw(); };
+document.getElementById('copy').onclick = async () => {
+  const p = pieces().find((x) => x.id === state.piece);
+  const value = p.part === 'card' ? kit.card ?? kit : kit[p.part];
+  await navigator.clipboard.writeText(JSON.stringify({ part: p.part, value }, null, 2));
+};
+// What an agent reads back: every face of the piece on show, measured.
+window.toolkit = { results, state, draw, kit };
+form();
+syncGrid();
+controls();
+draw();
+</script>
+</body>
+</html>
