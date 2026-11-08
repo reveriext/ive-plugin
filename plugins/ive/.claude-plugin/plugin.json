@@ -1,7 +1,7 @@
 {
   "name": "ive",
-  "version": "0.22.1",
-  "description": "Work on the person kit in your own project with Claude Code: Ive’s skill, Ive’s own editor, the connector and three commands (/ive:pull, /ive:open, /ive:save). It holds nothing of your organisation; the kit is pulled in when you work.",
+  "version": "0.22.2",
+  "description": "Ive for AI assistants: its skill and its connector, with commands and an editor for the person kit in Claude Code.",
   "author": {
     "name": "Ive"
   },
