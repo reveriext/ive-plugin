@@ -12,7 +12,7 @@ The Ive plugin for Claude Code. Work on the person kit in your own project with 
   the kit pulled into a folder, on this computer only; its Save writes `kit.json` there, and
   `/ive:save` sends it to Ive
 
-Install it from Ive's marketplace, which keeps it up to date:
+Install it from its public repository, which each release of Ive updates:
 
-    /plugin marketplace add https://hyive.app/plugin
+    /plugin marketplace add reveriext/ive-plugin
     /plugin install ive@ive
