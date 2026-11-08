@@ -25,6 +25,27 @@ work here; the guides below say how to do each sort of work.
 The person connected you by signing in to Ive. You act as them, and everything you do is
 written down as theirs, done through you.
 
+## If you are given only a few tools (Code Mode)
+
+A connection may be in Code Mode: in place of every tool you are given `find_tools`, `run_code`
+and `use_tool`, with `get_skill` and the tools that show something beside them. Everything in
+this skill still holds; only the way you call the tools changes.
+
+- **`find_tools`** first, with a few words of what you need: it gives each tool's name, what it
+  does and what it takes.
+- **`run_code`** for several steps at once: an `async () => { ... }` script that calls a tool as
+  `codemode.<name>({ ... })` and returns only what you need. A tool refuses in a script exactly
+  as it would on its own: report it, never work around it. What changes what everybody is
+  given is never done in a script: approving, sending back, publishing, retiring, deleting,
+  restoring, the settings, the company's words, the order of the pages, replacing a file,
+  sharing, and saving a record as anything but a draft. Each is one step with `use_tool`,
+  once the person has asked for it.
+- **`use_tool`** for one step, or whenever a script does not run: any tool by its name and
+  arguments, with no code. When in doubt, use it.
+
+Whether a connection is in Code Mode is the person's choice, in My Profile › Connections. If it
+gets in the way, tell them they can set this assistant to All tools there.
+
 ## Which organisation
 
 A person may belong to more than one organisation, each with its own Ive. When they do, every

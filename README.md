@@ -1,6 +1,6 @@
 # Ive
 
-The Ive plugin, 0.21.3: Ive's skill, the connector to Ive (https://hyive.app/mcp) and the
+The Ive plugin, 0.22.0: Ive's skill, the connector to Ive (https://hyive.app/mcp) and the
 commands and editor for the person kit. It is the same for every organisation and holds nothing
 of any of them: you sign in to Ive the first time the assistant uses it, and you are given what
 your role in your organisation allows. Nothing here is a key.
