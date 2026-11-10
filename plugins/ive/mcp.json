@@ -3,17 +3,7 @@
   "mcpServers": {
     "ive": {
       "type": "streamable-http",
-      "url": "https://hyive.app/mcp",
-      "extensions": {
-        "com.openai": {
-          "auth": {
-            "type": "oauth",
-            "client": {
-              "mode": "dcr"
-            }
-          }
-        }
-      }
+      "url": "https://hyive.app/mcp"
     }
   }
 }

@@ -23474,7 +23474,7 @@ function fD(e) {
 	t !== null && (bD.organisation = iy(bD.organisation, t)), n !== null && (bD.served = iy(bD.served, n));
 	let r = SD;
 	t !== null && (SD = e.get("X-Ive-Release-Chosen") === "1" ? t : "");
-	let i = bD.served !== void 0 && ry("0.22.3", bD.served) === "ahead" || bD.organisation !== void 0 && ry("0.22.3", bD.organisation) === "ahead" ? "reload" : !SD && bD.organisation !== void 0 && ry("0.22.3", bD.organisation) === "behind" ? "updating" : "current";
+	let i = bD.served !== void 0 && ry("0.22.4", bD.served) === "ahead" || bD.organisation !== void 0 && ry("0.22.4", bD.organisation) === "ahead" ? "reload" : !SD && bD.organisation !== void 0 && ry("0.22.4", bD.organisation) === "behind" ? "updating" : "current";
 	if (i !== xD || r !== SD) {
 		xD = i;
 		for (let e of wD) e();
@@ -23490,7 +23490,7 @@ async function mD(e, t = {}) {
 }
 async function hD(e, t, n) {
 	let r = new Headers(t.headers), i = !!t.method && t.method !== "GET" && t.method !== "HEAD", a = !e.startsWith("/api/platform/");
-	if (i && (r.set("X-Ive-Request", "app"), r.set(sy, "0.22.3"), a && xD !== "current")) throw new gD(xD === "reload" ? 409 : 503, ly[xD]);
+	if (i && (r.set("X-Ive-Request", "app"), r.set(sy, "0.22.4"), a && xD !== "current")) throw new gD(xD === "reload" ? 409 : 503, ly[xD]);
 	typeof t.body == "string" && r.set("Content-Type", "application/json"), n && r.set("If-None-Match", n);
 	let o = await Promise.race([yD().catch(() => null), new Promise((e) => setTimeout(() => e(null), 2500))]);
 	o && r.set("Authorization", `Bearer ${o}`), a && CD && r.set(dy, CD);
