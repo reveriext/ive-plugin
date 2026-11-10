@@ -1,28 +1,38 @@
-# Ive 0.22.2
+# Ive 0.22.3
 
-Ive for AI assistants: its skill and its connector, with commands and an editor for the person kit in Claude Code.
+Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.
 
 ## Install
 
-Claude Code:
+The full steps for each assistant are on your Connections page in Ive.
+
+### Claude Code
 
     /plugin marketplace add reveriext/ive-plugin
     /plugin install ive@ive
 
-Codex:
-
-    codex plugin marketplace add reveriext/ive-plugin
-
-ChatGPT: add `reveriext/ive-plugin` as a marketplace in the plugins directory.
-
-Any other assistant: add https://hyive.app/mcp as a remote MCP server, and the skill in
-`skills/ive` where it keeps skills.
-
-## Commands (Claude Code)
+In Claude Code the plugin also adds commands and an editor for the person kit:
 
 - `/ive:open`: Open Ive's editor of the person kit on the kit pulled into this folder.
 - `/ive:pull`: Take the organisation's person kit, its brand, tokens and fonts, and your own details from Ive into this folder.
 - `/ive:save`: Save a changed part of the person kit back to Ive, with the revision it was read at.
+
+### Claude, on the web and the desktop
+
+Customize › Plugins › Add › Add marketplace: `reveriext/ive-plugin`.
+
+### Codex
+
+    codex plugin marketplace add reveriext/ive-plugin
+
+### ChatGPT
+
+Plugins › + › Add custom MCP server: https://hyive.app/mcp, with OAuth.
+
+### Any other assistant
+
+Add https://hyive.app/mcp as a remote MCP server, and the skill in `skills/ive` where it
+keeps skills.
 
 ## Access
 

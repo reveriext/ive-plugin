@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ive",
-  "version": "0.22.2",
-  "description": "Ive for AI assistants: its skill and its connector, with commands and an editor for the person kit in Claude Code.",
+  "version": "0.22.3",
+  "description": "Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.",
   "author": {
     "name": "Ive",
     "url": "https://hyive.app"
@@ -19,7 +19,9 @@
     "com.openai": {
       "interface": {
         "displayName": "Ive",
-        "shortDescription": "Your organisation’s brand, knowledge and collateral, as you may use them.",
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/icon.png",
+        "shortDescription": "Your organisation’s brand, knowledge and collateral, in your AI assistant.",
         "developerName": "Ive",
         "category": "Productivity",
         "websiteURL": "https://hyive.app",

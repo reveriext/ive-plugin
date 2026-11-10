@@ -1,7 +1,8 @@
 {
   "name": "ive",
-  "version": "0.22.2",
-  "description": "Ive for AI assistants: its skill and its connector, with commands and an editor for the person kit in Claude Code.",
+  "displayName": "Ive",
+  "version": "0.22.3",
+  "description": "Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.",
   "author": {
     "name": "Ive"
   },

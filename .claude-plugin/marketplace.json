@@ -3,12 +3,12 @@
   "owner": {
     "name": "Ive"
   },
-  "description": "Ive, the same for every organisation.",
+  "description": "Ive for your AI assistant, the same for every organisation.",
   "plugins": [
     {
       "name": "ive",
-      "version": "0.22.2",
-      "description": "Ive for AI assistants: its skill and its connector, with commands and an editor for the person kit in Claude Code.",
+      "version": "0.22.3",
+      "description": "Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.",
       "source": "./plugins/ive"
     }
   ]
