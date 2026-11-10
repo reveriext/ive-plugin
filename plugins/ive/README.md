@@ -1,4 +1,4 @@
-# Ive 0.22.4
+# Ive 0.22.5
 
 Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.
 

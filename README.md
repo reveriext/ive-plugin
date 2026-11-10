@@ -1,6 +1,6 @@
 # Ive
 
-Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it. Version 0.22.4.
+Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it. Version 0.22.5.
 
 ## Install
 

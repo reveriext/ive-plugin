@@ -1,0 +1,19 @@
+{
+  "name": "ive",
+  "version": "0.22.5",
+  "description": "Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.",
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Ive",
+    "shortDescription": "Your organisation’s brand, knowledge and collateral, in your AI assistant.",
+    "longDescription": "Ive, your organisation’s brand, knowledge and collateral, in your AI assistant: the connection, and how to work in it.",
+    "developerName": "Ive",
+    "category": "Productivity",
+    "logo": "./assets/logo.png",
+    "composerIcon": "./assets/icon.png",
+    "websiteURL": "https://hyive.app",
+    "privacyPolicyURL": "https://hyive.app/privacy",
+    "termsOfServiceURL": "https://hyive.app/terms"
+  }
+}
